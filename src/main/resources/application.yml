@@ -1,0 +1,19 @@
+spring:
+  profiles:
+    active: dev
+  main:
+    web-application-type: none
+  kafka:
+    bootstrap-servers: ${BOOTSTRAP_SERVERS:127.0.0.1:9092}
+    consumer:
+      group-id: datastream-writer
+      auto-offset-reset: earliest
+      # enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+    topic:
+      # stock-data: datasource.gta.stockdata
+      future-data: test.prod.datasource.ctp.futuredata
+app:
+  parquet:
+    dir-path: data/parquets/
