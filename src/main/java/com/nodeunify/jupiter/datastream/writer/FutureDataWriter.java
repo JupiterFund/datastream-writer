@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class FutureDataWriter {
 
-    @Value("${app.parquet.dir-path}")
+    @Value("${app.parquet.dir-path.future-data}")
     private String dirPath;
 
     private Path path;
@@ -28,7 +28,7 @@ public class FutureDataWriter {
     @PostConstruct
     public void postConstruct() {
         String dateToday = Util.getDateOfToday();
-        String filePath = dirPath + "data_" + dateToday + ".futuredata.parquet";
+        String filePath = dirPath + "futuredata_" + dateToday + ".parquet";
         path = new Path(filePath);
         try {
             writer = new ProtoParquetWriter<FutureData>(path, FutureData.class);

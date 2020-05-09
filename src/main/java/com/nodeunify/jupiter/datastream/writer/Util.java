@@ -7,7 +7,7 @@ import java.util.TimeZone;
 
 public class Util {
 
-    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
     private static final TimeZone timeZone = TimeZone.getTimeZone("Asia/Shanghai");
 
     public static String getDateOfToday() {

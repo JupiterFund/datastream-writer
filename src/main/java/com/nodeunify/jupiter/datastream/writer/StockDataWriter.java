@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class StockDataWriter {
         
-    @Value("${app.parquet.dir-path}")
+    @Value("${app.parquet.dir-path.stock-data}")
     private String dirPath;
 
     // private Path path;

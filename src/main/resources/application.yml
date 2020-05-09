@@ -8,12 +8,13 @@ spring:
     consumer:
       group-id: datastream-writer
       auto-offset-reset: earliest
-      # enable-auto-commit: false
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
     topic:
-      # stock-data: datasource.gta.stockdata
-      future-data: test.prod.datasource.ctp.futuredata
+      future-data: dev.datasource.futuredata
+      stock-data: dev.datasource.stockdata
 app:
   parquet:
-    dir-path: data/parquets/
+    dir-path:
+      future-data: data/parquets/futuredata/
+      stock-data: data/parquets/stockdata/
