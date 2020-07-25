@@ -7,7 +7,7 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'io.spring.dependency-management'
 
-version = '0.0.2'
+version = '0.0.3'
 
 compileJava.options.encoding = 'UTF-8' 
 compileTestJava.options.encoding = 'UTF-8'
@@ -39,9 +39,13 @@ dependencies {
   implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
   // Parquet相关
   implementation 'org.apache.parquet:parquet-protobuf:1.10.1'
-  implementation('org.apache.hadoop:hadoop-common:2.7.0') {
+  implementation('org.apache.hadoop:hadoop-common:2.7.4') {
     exclude group: 'org.slf4j', module: 'slf4j-log4j12'
   }
+  // Parquet Reader相关
+  // implementation('org.apache.hadoop:hadoop-client:2.7.4') {
+  //   exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+  // }
   // 自动POJO生成
   compileOnly 'org.projectlombok:lombok:1.18.8'
   annotationProcessor 'org.projectlombok:lombok:1.18.8'

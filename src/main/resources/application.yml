@@ -6,7 +6,7 @@ spring:
   kafka:
     bootstrap-servers: ${BOOTSTRAP_SERVERS:127.0.0.1:9092}
     consumer:
-      group-id: datastream-writer
+      group-id: test-consumer
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
@@ -18,3 +18,8 @@ app:
     dir-path:
       future-data: data/parquets/futuredata/
       stock-data: data/parquets/stockdata/
+  # 例子: 如何使用设置来过滤期货合约及合约相应字段
+  #writer:
+  #  future-data:
+  #    instruments: if.*,ic.*,ih2008
+  #    fields: openPx,totalVolumeTrade,-openInterest
