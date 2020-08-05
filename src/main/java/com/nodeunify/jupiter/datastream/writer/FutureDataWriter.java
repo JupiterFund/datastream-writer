@@ -1,6 +1,8 @@
 package com.nodeunify.jupiter.datastream.writer;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -37,12 +39,14 @@ public class FutureDataWriter {
 
     @PostConstruct
     public void postConstruct() {
-        patterns = instruments
-            .stream()
-            .map(instrument -> Pattern.compile(instrument, Pattern.CASE_INSENSITIVE))
-            .collect(Collectors.toList());
-        String dateToday = Util.getDateOfToday();
-        String filePath = dirPath + "futuredata_" + dateToday + ".parquet";
+        patterns = instruments.stream().map(instrument -> Pattern.compile(instrument, Pattern.CASE_INSENSITIVE))
+                .collect(Collectors.toList());
+        LocalDate now = LocalDate.now();
+        String filePath = dirPath + 
+            "type=data/" + 
+            "year=" + now.getYear() + "/" + 
+            "month=" + now.getMonthValue() + "/" + 
+            now.format(DateTimeFormatter.ofPattern("YYYYMMDD")) + ".parquet";
         path = new Path(filePath);
         try {
             writer = new ProtoParquetWriter<FutureData>(path, FutureData.class);
