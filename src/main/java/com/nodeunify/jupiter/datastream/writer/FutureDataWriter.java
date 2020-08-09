@@ -46,7 +46,7 @@ public class FutureDataWriter {
             "type=data/" + 
             "year=" + now.getYear() + "/" + 
             "month=" + now.getMonthValue() + "/" + 
-            now.format(DateTimeFormatter.ofPattern("YYYYMMDD")) + ".parquet";
+            now.format(DateTimeFormatter.ofPattern("yyyyMMdd")) + ".parquet";
         path = new Path(filePath);
         try {
             writer = new ProtoParquetWriter<FutureData>(path, FutureData.class);
