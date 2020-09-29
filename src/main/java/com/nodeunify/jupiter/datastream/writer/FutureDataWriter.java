@@ -15,6 +15,9 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.nodeunify.jupiter.datastream.v1.FutureData;
 
 import org.apache.hadoop.fs.Path;
+import org.apache.parquet.column.ParquetProperties;
+import org.apache.parquet.hadoop.ParquetWriter;
+import org.apache.parquet.hadoop.metadata.CompressionCodecName;
 import org.apache.parquet.proto.ProtoParquetWriter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -41,15 +44,18 @@ public class FutureDataWriter {
     public void postConstruct() {
         patterns = instruments.stream().map(instrument -> Pattern.compile(instrument, Pattern.CASE_INSENSITIVE))
                 .collect(Collectors.toList());
-        LocalDate now = LocalDate.now();
+        // 盘后收数据已凌晨后，数据日期应为前一天
+        LocalDate yesterday = LocalDate.now().minusDays(1);
         String filePath = dirPath + 
             "type=data/" + 
-            "year=" + now.getYear() + "/" + 
-            "month=" + now.getMonthValue() + "/" + 
-            now.format(DateTimeFormatter.ofPattern("yyyyMMdd")) + ".parquet";
+            "year=" + yesterday.getYear() + "/" + 
+            "month=" + yesterday.getMonthValue() + "/" + 
+            yesterday.format(DateTimeFormatter.ofPattern("yyyyMMdd")) + ".parquet";
         path = new Path(filePath);
         try {
-            writer = new ProtoParquetWriter<FutureData>(path, FutureData.class);
+            writer = new ProtoParquetWriter<FutureData>(path, 
+                FutureData.class, CompressionCodecName.GZIP, 
+                ParquetWriter.DEFAULT_BLOCK_SIZE, ParquetProperties.DEFAULT_PAGE_SIZE);
         } catch (IOException e) {
             e.printStackTrace();
         }
