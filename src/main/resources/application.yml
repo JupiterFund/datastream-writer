@@ -10,6 +10,8 @@ spring:
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+    listener:
+      idle-event-interval: 2000
     topic:
       future-data: dev.datasource.futuredata
       stock-data: dev.datasource.stockdata

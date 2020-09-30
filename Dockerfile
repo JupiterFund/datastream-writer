@@ -15,7 +15,7 @@ RUN gradle build bootJar --no-daemon
 
 FROM $base_image
 
-ARG version=0.0.4
+ARG version=0.0.5
 
 COPY --from=build /home/gradle/workspace/build/distributions/* /tmp/
 RUN unzip /tmp/datastream-writer-boot-$version.zip

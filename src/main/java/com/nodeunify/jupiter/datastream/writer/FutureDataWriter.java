@@ -20,7 +20,9 @@ import org.apache.parquet.hadoop.ParquetWriter;
 import org.apache.parquet.hadoop.metadata.CompressionCodecName;
 import org.apache.parquet.proto.ProtoParquetWriter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.event.EventListener;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.event.ListenerContainerIdleEvent;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +41,7 @@ public class FutureDataWriter {
     private List<Pattern> patterns;
     private Path path;
     private ProtoParquetWriter<FutureData> writer;
+    private boolean writable = false;
 
     @PostConstruct
     public void postConstruct() {
@@ -56,6 +59,7 @@ public class FutureDataWriter {
             writer = new ProtoParquetWriter<FutureData>(path, 
                 FutureData.class, CompressionCodecName.GZIP, 
                 ParquetWriter.DEFAULT_BLOCK_SIZE, ParquetProperties.DEFAULT_PAGE_SIZE);
+            writable = true;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -64,15 +68,17 @@ public class FutureDataWriter {
     @PreDestroy
     public void preDestroy() {
         try {
-            if (writer != null) {
+            if (writer != null && writable) {
+                log.info("关闭ParquetWriter");
                 writer.close();
+                writable = false;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    @KafkaListener(topics = "${spring.kafka.topic.future-data}")
+    @KafkaListener(id="futureDataListner", topics = "${spring.kafka.topic.future-data}", containerFactory = "kafkaListenerContainerFactory")
     public void writeFutureData(byte[] bytes) {
         try {
             FutureData futureData = FutureData.parseFrom(bytes);
@@ -102,11 +108,25 @@ public class FutureDataWriter {
                     });
                 futureData = builder.build();
                 log.trace("futureData: {}", futureData.getCode());
-                writer.write(futureData);
+                if (writable) {
+                    writer.write(futureData);
+                } else {
+                    log.warn("ParquetWriter已关闭");
+                }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("写入Parquet文件错误", e);
+        } catch (Exception e) {
+            log.error("数据落地异常", e);
+        } finally {
+            preDestroy();
         }
+    }
+
+    @EventListener(condition = "event.listenerId.startsWith('futureDataListner-')")
+    public void eventHandler(ListenerContainerIdleEvent event) {
+        log.info("接收数据闲置超过限时，无更多可落地数据");
+        preDestroy();
     }
 
     // 上游得到的数据中存在Long型最大值作为缺省无效值
