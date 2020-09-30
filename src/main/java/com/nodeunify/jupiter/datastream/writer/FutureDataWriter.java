@@ -118,8 +118,6 @@ public class FutureDataWriter {
             log.error("写入Parquet文件错误", e);
         } catch (Exception e) {
             log.error("数据落地异常", e);
-        } finally {
-            preDestroy();
         }
     }
 
