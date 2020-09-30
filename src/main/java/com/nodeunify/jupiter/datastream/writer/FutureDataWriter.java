@@ -110,8 +110,6 @@ public class FutureDataWriter {
                 log.trace("futureData: {}", futureData.getCode());
                 if (writable) {
                     writer.write(futureData);
-                } else {
-                    log.warn("ParquetWriter已关闭");
                 }
             }
         } catch (IOException e) {
