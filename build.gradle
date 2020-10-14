@@ -7,7 +7,7 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'io.spring.dependency-management'
 
-version = '0.0.5'
+version = '0.0.6'
 
 compileJava.options.encoding = 'UTF-8' 
 compileTestJava.options.encoding = 'UTF-8'
@@ -32,6 +32,8 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-log4j2'
   implementation 'org.springframework.kafka:spring-kafka:2.2.5.RELEASE'
   implementation 'org.apache.commons:commons-csv:1.6'
+  // 异步日志
+  implementation 'com.lmax:disruptor:3.3.6'
   // YAML配置文件
   implementation 'com.fasterxml.jackson.core:jackson-databind'
   implementation 'com.fasterxml.jackson.core:jackson-core'

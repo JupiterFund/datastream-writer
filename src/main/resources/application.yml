@@ -11,12 +11,20 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
     listener:
-      idle-event-interval: 2000
+      idle-event-interval: 3600000
     topic:
       future-data: dev.datasource.futuredata
       stock-data: dev.datasource.stockdata
 app:
+  # 指定开始结束时间, 优先级高于时间段设置
+  start-time: '2020-10-12 14:00:00'
+  end-time: '2020-10-12 14:00:10'
+  # 指定时间段
+  # 可选值为: day, night, naturalDay, tradingDay
+  # 分别对应: 日盘, 夜盘, 自然日, 交易日
+  time-period: tradingDay
   parquet:
+    # file-path: data/parquets/test.parquet
     dir-path:
       future-data: data/parquets/futuredata/
       stock-data: data/parquets/stockdata/
